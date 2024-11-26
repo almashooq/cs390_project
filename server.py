@@ -12,7 +12,7 @@ def Sign_Up():
 
 @app.route("/login", methods=["GET"])
 def Login():
-    return render_template("Sign_Up.html")
+    return render_template("Login.html")
 
 @app.route("/junior", methods=["GET"])
 def Junior():
