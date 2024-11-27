@@ -11,22 +11,57 @@
         <h1>CS ARCS</h1>
         <hr>
         <h2>Create a New Account</h2>
-        <form>
+        <form id="signupForm">
             <div class="name-fields">
-                <label>First Name:</label>
-                <input type="text" placeholder="First Name">
-                <label>Last Name:</label>
-                <input type="text" placeholder="Last Name">
-                <label>University ID:</label>
-                <input type="text" placeholder="ID">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" placeholder="First Name" required>
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" placeholder="Last Name" required>
+                <label for="university_id">University ID:</label>
+                <input type="text" id="university_id" name="university_id" placeholder="ID" required>
+                <label for="role">Role:</label>
+                <input type="text" id="role" name="role" placeholder="Role" required>
             </div>
-            <label>Email:</label>
-            <input type="email" placeholder="enter your uni-email">
-            <label>Password:</label>
-            <input type="password" placeholder="Password">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your uni-email" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Password" required>
             <p class="login-link">Already have an account? <a href="/login">Login now!</a></p>
-            <button type="submit">Join</button>
-        </form>
+            <button type="button" onclick="submitForm()">Join</button>
+        </form>        
     </div>
+
+    <script>
+        function submitForm() {
+            const formData = {
+                first_name: document.getElementById("first_name").value,
+                last_name: document.getElementById("last_name").value,
+                university_id: document.getElementById("university_id").value,
+                role: document.getElementById("role").value,
+                email: document.getElementById("email").value,
+                password: document.getElementById("password").value
+            };
+    
+            fetch("/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Account created successfully!");
+                } else {
+                    alert("Error: " + data.error);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    </script>
+    
 </body>
 </html>
