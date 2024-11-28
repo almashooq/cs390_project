@@ -11,7 +11,7 @@
         <h1>CS ARCS</h1>
         <hr>
         <h2>Create a New Account</h2>
-        <form id="signupForm">
+        <form id="signupForm" action="/signup"  method="post">
             <div class="name-fields">
                 <label for="first_name">First Name:</label>
                 <input type="text" id="first_name" name="first_name" placeholder="First Name" required>
@@ -32,35 +32,41 @@
     </div>
 
     <script>
-        function submitForm() {
-            const formData = {
-                first_name: document.getElementById("first_name").value,
-                last_name: document.getElementById("last_name").value,
-                university_id: document.getElementById("university_id").value,
-                role: document.getElementById("role").value,
-                email: document.getElementById("email").value,
-                password: document.getElementById("password").value
-            };
-    
-            fetch("/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Account created successfully!");
-                } else {
-                    alert("Error: " + data.error);
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
+    function submitForm() {
+    const formData = {
+        first_name: document.getElementById("first_name").value,
+        last_name: document.getElementById("last_name").value,
+        university_id: document.getElementById("university_id").value,
+        role: document.getElementById("role").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+    };
+
+    fetch("/signup", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;
+        } else {
+            return response.json();
         }
+    })
+    .then(data => {
+        if (data && !data.success) {
+            alert("Error: " + data.error);
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+}
+
+         
     </script>
     
 </body>
