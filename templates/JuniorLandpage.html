@@ -9,6 +9,66 @@
 <body>
     <div class="container">
         <h1>Welcome Back Junior</h1>
+        <section>
+            <h2>Create a Task Request</h2>
+            <form id="taskRequestForm" onsubmit="submitTaskRequest(event)">
+                <label for="subject">Computer Science Subject:</label>
+                <select id="subject" name="subject" required>
+                    <option value="">--Select a Subject--</option>
+                    <option value="Data Structures">Data Structures</option>
+                    <option value="Algorithms">Algorithms</option>
+                    <option value="Artificial Intelligence">Artificial Intelligence</option>
+                </select>
+
+                <label for="struggles">Areas You Struggle With:</label>
+                <textarea id="struggles" name="struggles" placeholder="Describe the areas you need help with..." required></textarea>
+
+                <label for="guidance">Type of Guidance Needed:</label>
+                <textarea id="guidance" name="guidance" placeholder="Describe the guidance you are seeking..." required></textarea>
+
+                <button type="submit">Submit Task Request</button>
+            </form>
+        </section>
+        <section>
+            <h2>Information for Senior Students</h2>
+            <p>Senior students can browse available tasks and select those they wish to assist with. They can only accept tasks related to the courses they are currently enrolled in. The system will track and match these tasks to their registered courses.</p>
+        </section>
     </div>
+    <script>
+        // JavaScript to handle task request submission via fetch
+        function submitTaskRequest(event) {
+            event.preventDefault(); // Prevent default form submission
+    
+            const formData = {
+                subject: document.getElementById("subject").value,
+                struggles: document.getElementById("struggles").value,
+                guidance: document.getElementById("guidance").value,
+            };
+    
+            fetch("/junior", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Task request submitted successfully!");
+                    document.getElementById("taskRequestForm").reset(); // Clear form fields
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data && !data.success) {
+                    alert("Error: " + data.error);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    </script>
 </body>
 </html>

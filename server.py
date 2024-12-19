@@ -84,9 +84,17 @@ def Login():
 
 
 
-@app.route("/junior", methods=["GET"])
+@app.route("/junior", methods=["GET", "POST"])
 def junior():
-    return render_template("JuniorLandpage.html")
+    if request.method == "GET":
+        return render_template("JuniorLandpage.html")
+    elif request.method == "POST":
+        try:
+            data = request.json
+            print("Received data:", data)
+            return jsonify({"success": True, "message": "Task request submitted successfully!"}), 200
+        except Exception as e:
+            return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route("/senior", methods=["GET"])
 def senior():
