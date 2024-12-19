@@ -43,26 +43,45 @@ def Sign_Up():
             return jsonify({"success": False, "error": str(e)}), 500
 
 
-@app.route("/login", methods=["GET" , "POST"])
+@app.route("/login", methods=["GET", "POST"])
 def Login():
     if request.method == "GET":
         return render_template("Login.html")
     elif request.method == "POST":
         try:
             person_data = request.json
+            print("Received data:", person_data)
+            if not person_data:
+                return jsonify({"success": False, "error": "No data received"}), 400
+            
             email = person_data.get("email")
             password = person_data.get("password")
+            
             user = db.People.find_one({"email": email})
             if not user:
                 return jsonify({"success": False, "error": "User not found"}), 404
-
-            role = user.get("role")
-            if not role:
-                return jsonify({"success": False, "error": "Role not defined"}), 400
             
-            return redirect(url_for(role.lower()))
+            role = user.get('role')
+            if not role:
+                return jsonify({"success": False, "error": "Role not defined for user"}), 400
+
+            role_routes = {
+                "junior": "junior",
+                "senior": "senior",
+                "faculty": "faculty"
+            }
+            redirect_route = role_routes.get(role.lower())
+            print(f"User role: {role}")
+            print(f"Redirecting to: {redirect_route}")
+
+            if not redirect_route:
+                return jsonify({"success": False, "error": f"Invalid role: {role}"}), 400
+
+            return redirect(url_for(redirect_route))
+        
         except Exception as e:
             return jsonify({"success": False, "error": str(e)}), 500
+
 
 
 @app.route("/junior", methods=["GET"])
@@ -71,6 +90,7 @@ def junior():
 
 @app.route("/senior", methods=["GET"])
 def senior():
+    print("rendring")
     return render_template("SeniorLandpage.html")
 
 @app.route("/faculty", methods=["GET"])

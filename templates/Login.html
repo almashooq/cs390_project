@@ -11,45 +11,49 @@
         <h1>CS ARCS</h1>
         <hr>
         <h2>Login</h2>
-        <form id="">
-            <label>Email:</label>
-            <input type="email" id="email" placeholder="enter your uni-email">
-            <label>Password:</label>
-            <input type="password" id="password" placeholder="Password">
-            <button type="submit" onclick="submitForm()">login</button>
+        <form id="loginform" onsubmit="submitForm(event)">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your uni-email" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
         </form>
     </div>
+
     <script>
-    function submitForm() {
-    const formData = {
-        email: document.getElementById("email").value,
-        password: document.getElementById("password").value,
-    };
+    // JavaScript to handle form submission via fetch
+    function submitForm(event) {
+        event.preventDefault(); // Prevent default form submission
 
-    fetch("/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(response => {
-        if (response.redirected) {
-            window.location.href = response.url;
-        } else {
-            return response.json();
-        }
-    })
-    .then(data => {
-        if (data && !data.success) {
-            alert("Error: " + data.error);
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-    });
-}
+        const formData = {
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+        };
 
+        fetch("/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (response.redirected) {
+                // Handle redirect
+                window.location.href = response.url;
+            } else {
+                return response.json();
+            }
+        })
+        .then(data => {
+            if (data && !data.success) {
+                alert("Error: " + data.error);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    }
     </script>
 </body>
 </html>
